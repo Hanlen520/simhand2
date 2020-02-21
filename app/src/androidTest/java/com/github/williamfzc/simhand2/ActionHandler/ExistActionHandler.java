@@ -27,9 +27,6 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.util.Log;
 
-import com.github.williamfzc.simhand2.Selector;
-import com.github.williamfzc.simhand2.SHUtils;
-
 import java.util.Map;
 
 public class ExistActionHandler extends BaseActionHandler {
@@ -43,23 +40,7 @@ public class ExistActionHandler extends BaseActionHandler {
     public boolean apply(Map<String, String> paramsMap) {
         initParams(paramsMap);
         UiObject targetElement;
-
-        // invalid widget name
-        if ("".equals(widgetName)) {
-            return false;
-        }
-        // need no delay
-        if (SHUtils.isNumeric(delayTime)) {
-            targetElement = Selector.waitElementByText(mDevice, widgetName, Integer.valueOf(delayTime));
-        } else {
-            targetElement = Selector.findElementByText(mDevice, widgetName);
-        }
-        try {
-            targetElement.exists();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        targetElement = findElement();
+        return targetElement != null;
     }
 }

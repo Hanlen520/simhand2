@@ -53,6 +53,30 @@ public class SystemActionHandler extends BaseActionHandler {
                 case "turnOffAirplaneMode":
                     execResult = switchAirplaneMode(false);
                     break;
+                case "turnOnBluetooth":
+                    execResult = switchBluetoothMode(true);
+                    break;
+                case "turnOffBluetooth":
+                    execResult = switchBluetoothMode(false);
+                    break;
+                case "pressBack":
+                    execResult = pressButton("back").toString();
+                    break;
+                case "pressHome":
+                    execResult = pressButton("home").toString();
+                    break;
+                case "pressMenu":
+                    execResult = pressButton("menu").toString();
+                    break;
+                case "pressEnter":
+                    execResult = pressButton("enter").toString();
+                    break;
+                case "pressDelete":
+                    execResult = pressButton("delete").toString();
+                    break;
+                case "pressPower":
+                    execResult = pressButton("power").toString();
+                    break;
                 default:
                     break;
             }
@@ -79,5 +103,47 @@ public class SystemActionHandler extends BaseActionHandler {
         execResult = mDevice.executeShellCommand("settings put global airplane_mode_on " + modeCode);
         execResult += mDevice.executeShellCommand("am broadcast -a android.intent.action.AIRPLANE_MODE --ez state " + stateFlag);
         return execResult;
+    }
+
+    private String switchBluetoothMode(boolean on) throws IOException {
+        String stateFlag;
+        if (on) {
+            stateFlag = "enable";
+        } else {
+            stateFlag = "disable";
+        }
+        return mDevice.executeShellCommand("svc bluetooth " + stateFlag);
+    }
+
+    private Boolean pressButtonByCode(Integer keyCode) {
+        return mDevice.pressKeyCode(keyCode);
+    }
+
+    private Boolean pressButton(String buttonName) {
+        Boolean pressResult;
+        switch (buttonName) {
+            case "home":
+                pressResult = mDevice.pressHome();
+                break;
+            case "back":
+                pressResult = mDevice.pressBack();
+                break;
+            case "delete":
+                pressResult = mDevice.pressDelete();
+                break;
+            case "enter":
+                pressResult = mDevice.pressEnter();
+                break;
+            case "menu":
+                pressResult = mDevice.pressMenu();
+                break;
+            case "power":
+                pressResult = pressButtonByCode(26);
+                break;
+            default:
+                pressResult = false;
+                Log.w(TAG, "button " + buttonName + " not found");
+        }
+        return pressResult;
     }
 }
